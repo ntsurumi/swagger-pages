@@ -3,7 +3,13 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - "**"
+      - main # mainブランチへのプッシュをトリガー
+    paths:
+      - docs/openapi.yml
+      - .github/workflows/deploy-to-github-pages.yml
+  pull_request:
+    branches:
+      - main # mainブランチへのプルリクエストをトリガー
     paths:
       - docs/openapi.yml
       - .github/workflows/deploy-to-github-pages.yml
@@ -45,6 +51,15 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
+      - name: Determine deployment type
+        id: deployment-type
+        run: |
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            echo "preview=true" >> $GITHUB_ENV
+          else
+            echo "preview=false" >> $GITHUB_ENV
+          fi
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        preview: ${{ steps.deployment-type.outputs.preview }}
