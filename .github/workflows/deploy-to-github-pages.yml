@@ -28,7 +28,7 @@ jobs:
           output: swagger-ui
           spec-file: docs/openapi.yml
 
-      - uses: actions/upload-pages-artifact@v1
+      - uses: actions/upload-pages-artifact@v4
         with:
           path: swagger-ui
 
